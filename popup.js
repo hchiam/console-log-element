@@ -2,6 +2,7 @@ setUpVersionNumberLink();
 
 document.getElementById("do-it").addEventListener("click", function () {
   createConsoleLog();
+  window.close();
 });
 
 function setUpVersionNumberLink() {

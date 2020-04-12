@@ -83,7 +83,7 @@ function createConsoleLog() {
     var theWholeThingDiv = document.createElement("div");
     theWholeThingDiv.id = "firefox-extension-console-log-element";
     theWholeThingDiv.style =
-      "z-index: 99999 !important; padding: 0 !important;";
+      "z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important;";
     inputGroupdDiv.appendChild(inputBox);
     inputGroupdDiv.appendChild(inputButton);
     theWholeThingDiv.appendChild(inputGroupdDiv);
