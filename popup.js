@@ -2,7 +2,6 @@ setUpVersionNumberLink();
 
 document.getElementById("do-it").addEventListener("click", function () {
   createConsoleLog();
-  window.close();
 });
 
 function setUpVersionNumberLink() {
@@ -36,6 +35,7 @@ function sendMessageToTabs(tabs) {
       .sendMessage(tab.id, {
         shouldCreateConsoleLogElement: true,
       })
+      .then(window.close)
       .catch(onError);
   }
 }

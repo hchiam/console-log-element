@@ -13,8 +13,15 @@ function createConsoleLog() {
     var elementAlreadyExists = document.getElementById(
       "firefox-extension-console-log-element"
     );
+    var widgetDefaultStyle =
+      "z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important;";
     if (elementAlreadyExists) {
+      elementAlreadyExists.hidden = false;
+      elementAlreadyExists.style = widgetDefaultStyle;
       elementAlreadyExists.scrollIntoView();
+      document
+        .getElementById("inputBox_firefox-extension-console-log-element")
+        .focus();
       return;
     }
 
@@ -38,7 +45,7 @@ function createConsoleLog() {
     var inputBox = document.createElement("input");
     inputBox.id = "inputBox_firefox-extension-console-log-element";
     inputBox.placeholder = "console log input here";
-    inputBox.title = "enter x to remove this widget";
+    inputBox.title = "enter x to hide this widget";
     inputBox.style = inputBoxDefaultStyle;
     inputBox.onkeyup = function (event) {
       if (event.key === "Enter" || event.keyCode === 13) {
@@ -58,7 +65,7 @@ function createConsoleLog() {
     var inputButton = document.createElement("button");
     inputButton.id = "inputButton_firefox-extension-console-log-element";
     inputButton.innerText = "Send to console log";
-    inputButton.title = "enter x to remove this widget";
+    inputButton.title = "enter x to hide this widget";
     inputButton.style = inputButtonDefaultStyle;
     inputButton.onclick = function () {
       triggerInputToConsole();
@@ -82,20 +89,21 @@ function createConsoleLog() {
     // put the elements together:
     var theWholeThingDiv = document.createElement("div");
     theWholeThingDiv.id = "firefox-extension-console-log-element";
-    theWholeThingDiv.style =
-      "z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important;";
+    theWholeThingDiv.style = widgetDefaultStyle;
     inputGroupdDiv.appendChild(inputBox);
     inputGroupdDiv.appendChild(inputButton);
     theWholeThingDiv.appendChild(inputGroupdDiv);
     theWholeThingDiv.appendChild(consoleOutput);
     document.body.appendChild(theWholeThingDiv);
 
+    inputBox.focus();
+
     redefineConsoleLog();
 
     function redefineConsoleLog() {
-      var oldLog = console.log;
+      var oldConsoleLog = console.log;
       console.log = function (...items) {
-        oldLog.apply(this, items);
+        oldConsoleLog.apply(this, items);
         items.forEach(function (item, i) {
           if (typeof item === "object") {
             items[i] = JSON.stringify(item, null, 4);
@@ -129,13 +137,11 @@ function createConsoleLog() {
         stringInput === '"x"' ||
         stringInput === "'x'"
       ) {
-        var confirmed = confirm(
-          "Do you want to remove this console log widget?"
-        );
+        var confirmed = confirm("Do you want to hide this console log widget?");
         if (!confirmed) return; // (cancelled)
         consoleOutput.innerHTML = "";
-        inputGroupdDiv.innerHTML = "";
-        document.body.removeChild(theWholeThingDiv);
+        theWholeThingDiv.hidden = true;
+        theWholeThingDiv.style = widgetDefaultStyle + "visibility: hidden;";
         return;
       }
       // display input:
