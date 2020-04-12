@@ -1,11 +1,11 @@
 {
-  "description": "Changes background on pages matching mozilla.org",
+  "description": "Creates a console log interface on the page",
   "manifest_version": 2,
-  "name": "LearningFirefoxExtension",
-  "version": "1.0.0",
-  "homepage_url": "https://github.com/hchiam/learning-firefox-extension",
+  "name": "ConsoleLogElement",
+  "version": "0.1.0",
+  "homepage_url": "https://github.com/hchiam/console-log-element",
   "icons": {
-    "48": "example-icon.png"
+    "48": "console-log-element.png"
   },
   "content_scripts": [
     {
@@ -13,8 +13,7 @@
       "js": ["brain.js"]
     }
   ],
-  "permissions": [
-    "storage",
-    "<all_urls>"
-  ]
+  "browser_action": {
+    "default_popup": "popup.html"
+  }
 }
