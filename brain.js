@@ -1,11 +1,11 @@
 createConsoleLog(); // to view previous logs, it'll track console log in the background
 
-// browser.runtime.onMessage.addListener((results) => {
-//   const showConsoleLogElement = results.showConsoleLogElement;
-//   if (showConsoleLogElement) {
-//     showConsoleLog();
-//   }
-// });
+browser.runtime.onMessage.addListener((results) => {
+  const showConsoleLogElement = results.showConsoleLogElement;
+  if (showConsoleLogElement) {
+    showConsoleLog();
+  }
+});
 
 function showConsoleLog() {
   var widgetDefaultStyle =
