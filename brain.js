@@ -8,14 +8,21 @@ browser.runtime.onMessage.addListener((results) => {
 });
 
 function showConsoleLog() {
-  var widgetDefaultStyle =
-    "z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important; visibility: visible;";
+  (function () {
+    // use an IIFE to isolate variables
+    var widgetDefaultStyle =
+      "z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important; visibility: visible;";
 
-  var theWholeThingDiv = document.getElementById(
-    "firefox-extension-console-log-element"
-  );
-  theWholeThingDiv.hidden = false;
-  theWholeThingDiv.style = widgetDefaultStyle;
+    var theWholeThingDiv = document.getElementById(
+      "firefox-extension-console-log-element"
+    );
+    theWholeThingDiv.hidden = false;
+    theWholeThingDiv.style = widgetDefaultStyle;
+    theWholeThingDiv.scrollIntoView();
+    document
+      .getElementById("inputBox_firefox-extension-console-log-element")
+      .focus();
+  })();
 }
 
 /* This creates an interactive console log that you can view without opening the actual web dev tools console log. */
@@ -70,18 +77,14 @@ function createConsoleLog() {
       console.log = function (...inputs) {
         var input = inputs[0]; // only one input from input box
         var output = "";
-        try {
-          output = eval(input);
-          oldConsoleLog.apply(this, inputs);
-          oldConsoleLog.apply(this, output);
-          if (isElement(output)) {
-            output = output.outerHTML
-              .replace(/</g, "&lt;")
-              .replace(/\\\//g, "/");
-          } else if (typeof output === "object") {
-            output = JSON.stringify(output, null, 4);
-          }
-        } catch (e) {}
+        oldConsoleLog.apply(this, inputs);
+        output = eval(input);
+        if (isElement(output)) {
+          output = output.outerHTML.replace(/</g, "&lt;").replace(/\\\//g, "/");
+        } else if (typeof output === "object") {
+          output = JSON.stringify(output, null, 4);
+        }
+        // NOTE: by NOT wrapping the preceding lines in a try-catch, invalid input will NOT submit
         consoleOutput.innerHTML +=
           '<span style="background: black; color: lime;">' +
           input +
@@ -159,7 +162,10 @@ function createConsoleLog() {
     }
 
     function isElement(element) {
-      return element instanceof Element || element instanceof HTMLDocument;
+      return (
+        element &&
+        (element instanceof Element || element instanceof HTMLDocument)
+      );
     }
 
     function triggerInputToConsole() {
@@ -171,9 +177,9 @@ function createConsoleLog() {
     function inputToConsole(stringInput) {
       lastInput = stringInput;
       if (stringInput === "") return; // ignore empty input
-      var clr = handledClear(stringInput);
-      var x = handledCustomCommandX(stringInput);
-      if (clr || x) return;
+      if (handledClear(stringInput) || handledCustomCommandX(stringInput)) {
+        return;
+      }
 
       console.log(stringInput);
       // auto-scroll to last output:
@@ -210,6 +216,22 @@ function createConsoleLog() {
 
     function clearInput() {
       inputBox.value = "";
+    }
+
+    function $(selector, el) {
+      // $(...) is a web console helper
+      if (!el) {
+        el = document;
+      }
+      return el.querySelector(selector);
+    }
+
+    function $$(selector, el) {
+      // $$(...) is a web console helper
+      if (!el) {
+        el = document;
+      }
+      return el.querySelectorAll(selector);
     }
   })();
 }
