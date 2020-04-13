@@ -200,6 +200,7 @@ function createConsoleLog() {
     }
 
     function handledCustomCommandX(stringInput) {
+      stringInput = stringInput.toLowerCase();
       if (
         stringInput === "x" ||
         stringInput === '"x"' ||
