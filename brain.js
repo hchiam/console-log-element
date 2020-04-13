@@ -214,10 +214,6 @@ function createConsoleLog() {
       return false;
     }
 
-    function enterLastInput() {
-      inputBox.value = lastInput;
-    }
-
     function clearInput() {
       inputBox.value = "";
     }
@@ -241,6 +237,10 @@ function createConsoleLog() {
       setTimeout(() => {
         inputGroupDiv.classList.remove("wobble");
       }, 500);
+    }
+
+    function enterLastInput() {
+      inputBox.value = lastInput;
     }
 
     function $(selector, el) {
