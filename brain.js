@@ -102,20 +102,28 @@ function createConsoleLog() {
 
     function redefineConsoleLog() {
       var oldConsoleLog = console.log;
-      console.log = function (...items) {
-        oldConsoleLog.apply(this, items);
-        items.forEach(function (item, i) {
-          if (isElement(item)) {
-            items[i] = item.outerHTML
+      console.log = function (...inputs) {
+        var input = inputs[0]; // only one input from input box
+        var output = "";
+        try {
+          output = eval(input);
+          oldConsoleLog.apply(this, inputs);
+          oldConsoleLog.apply(this, output);
+          if (isElement(output)) {
+            output = output.outerHTML
               .replace(/</g, "&lt;")
               .replace(/\\\//g, "/");
-          } else if (typeof item === "object") {
-            items[i] = JSON.stringify(item, null, 4);
-          } else {
-            items[i] = item;
+          } else if (typeof output === "object") {
+            output = JSON.stringify(output, null, 4);
           }
-        });
-        consoleOutput.innerHTML += items.join(" ") + "<br />";
+        } catch (e) {}
+        consoleOutput.innerHTML +=
+          '<span style="background: black; color: lime;">' +
+          input +
+          "</span><br/>" +
+          '<span style="background: black; color: white;">' +
+          output +
+          "</span><br/><br/>";
       };
     }
 
@@ -136,7 +144,6 @@ function createConsoleLog() {
       // handle clear():
       if (stringInput === "clear()") {
         consoleOutput.innerHTML = "";
-        // console.log(eval(stringInput));
         return;
       }
       // handle special custom command x:
@@ -152,26 +159,7 @@ function createConsoleLog() {
         theWholeThingDiv.style = widgetDefaultStyle + "visibility: hidden;";
         return;
       }
-      // display input:
-      console.log(
-        '<span style="background: black; color: lime;">' +
-          stringInput +
-          "</span>"
-      );
-      try {
-        // display evaluated output:
-        var evaluatedOutput = eval(stringInput);
-        if (evaluatedOutput === undefined) {
-          console.log("undefined");
-        } else {
-          console.log(evaluatedOutput);
-        }
-      } catch (e) {
-        // display error stack:
-        console.log(e.stack);
-      }
-      // extra line for separation (a personal choice):
-      console.log();
+      console.log(stringInput);
       // auto-scroll to last output:
       consoleOutput.scrollTop = consoleOutput.scrollHeight;
       consoleOutput.scrollIntoView();
