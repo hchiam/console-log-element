@@ -1,5 +1,7 @@
 # Console Log Element
 
+![version](https://img.shields.io/github/release/hchiam/console-log-element) [![HitCount](http://hits.dwyl.com/hchiam/console-log-element.svg)](http://hits.dwyl.com/hchiam/console-log-element)
+
 Firefox Add-on page: <https://addons.mozilla.org/en-US/firefox/addon/console-log-element>
 
 Sometimes I wish I could just open the console log right on a mobile device.
