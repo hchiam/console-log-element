@@ -33,7 +33,7 @@ function sendMessageToTabs(tabs) {
   for (let tab of tabs) {
     browser.tabs
       .sendMessage(tab.id, {
-        shouldCreateConsoleLogElement: true,
+        showConsoleLogElement: true,
       })
       .then(window.close)
       .catch(onError);

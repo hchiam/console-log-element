@@ -1,9 +1,29 @@
+createConsoleLog(); // to view previous logs, it'll track console log in the background
+
 browser.runtime.onMessage.addListener((results) => {
-  const toldToCreateConsoleLogElement = results.shouldCreateConsoleLogElement;
-  if (toldToCreateConsoleLogElement) {
-    createConsoleLog();
+  const showConsoleLogElement = results.showConsoleLogElement;
+  if (showConsoleLogElement) {
+    showConsoleLog();
   }
 });
+
+function showConsoleLog() {
+  (function () {
+    // use an IIFE to isolate variables
+    var widgetDefaultStyle =
+      "z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important; visibility: visible;";
+
+    var theWholeThingDiv = document.getElementById(
+      "firefox-extension-console-log-element"
+    );
+    theWholeThingDiv.hidden = false;
+    theWholeThingDiv.style = widgetDefaultStyle;
+    theWholeThingDiv.scrollIntoView();
+    document
+      .getElementById("inputBox_firefox-extension-console-log-element")
+      .focus();
+  })();
+}
 
 /* This creates an interactive console log that you can view without opening the actual web dev tools console log. */
 function createConsoleLog() {
@@ -38,63 +58,15 @@ function createConsoleLog() {
       "margin-left: 0 !important; border-radius: 0 0.2rem 0.2rem 0 !important;";
     var inputHoverStyle = "background: lime; color: black;";
 
-    var inputGroupdDiv = document.createElement("div");
-    inputGroupdDiv.style =
+    var inputGroupDiv = document.createElement("div");
+    inputGroupDiv.style =
       "border-radius: 0.3rem !important; display: inline-block !important; border: 2px solid lightgrey !important; padding: 0 !important;";
 
-    var inputBox = document.createElement("input");
-    inputBox.id = "inputBox_firefox-extension-console-log-element";
-    inputBox.placeholder = "console log input here";
-    inputBox.title = "enter x to hide this widget";
-    inputBox.style = inputBoxDefaultStyle;
-    inputBox.onkeyup = function (event) {
-      if (event.key === "Enter" || event.keyCode === 13) {
-        triggerInputToConsole();
-      } else if (event.key === "ArrowUp" || event.keyCode === 38) {
-        enterLastInput();
-      }
-    };
-    inputBox.onmouseenter = function () {
-      inputBox.style = inputBoxDefaultStyle + inputHoverStyle;
-      inputBox.focus();
-    };
-    inputBox.onmouseleave = function () {
-      inputBox.style = inputBoxDefaultStyle;
-    };
-
-    var inputButton = document.createElement("button");
-    inputButton.id = "inputButton_firefox-extension-console-log-element";
-    inputButton.innerText = "Send to console log";
-    inputButton.title = "enter x to hide this widget";
-    inputButton.style = inputButtonDefaultStyle;
-    inputButton.onclick = function () {
-      triggerInputToConsole();
-      inputBox.focus();
-    };
-    inputButton.onmouseenter = function () {
-      inputButton.style = inputButtonDefaultStyle + inputHoverStyle;
-      if (inputBox.value === "") {
-        inputBox.focus();
-      }
-    };
-    inputButton.onmouseleave = function () {
-      inputButton.style = inputButtonDefaultStyle;
-    };
-
-    var consoleOutput = document.createElement("pre");
-    consoleOutput.id = "output_firefox-extension-console-log-element";
-    consoleOutput.style =
-      "margin-top: 1px !important; max-height: 100px !important; overflow: scroll !important; width: 100% !important; background: black !important; color: white !important; border: none !important; border-radius: 0.3rem !important; padding: 0 !important;";
-
-    // put the elements together:
-    var theWholeThingDiv = document.createElement("div");
-    theWholeThingDiv.id = "firefox-extension-console-log-element";
-    theWholeThingDiv.style = widgetDefaultStyle;
-    inputGroupdDiv.appendChild(inputBox);
-    inputGroupdDiv.appendChild(inputButton);
-    theWholeThingDiv.appendChild(inputGroupdDiv);
-    theWholeThingDiv.appendChild(consoleOutput);
-    document.body.appendChild(theWholeThingDiv);
+    // create elements:
+    var inputBox = createInputBox();
+    var inputButton = createInputButton();
+    var consoleOutput = createConsoleOutput();
+    var theWholeThingDiv = createConsoleLogWidget();
 
     inputBox.focus();
 
@@ -102,87 +74,189 @@ function createConsoleLog() {
 
     function redefineConsoleLog() {
       var oldConsoleLog = console.log;
-      console.log = function (...items) {
-        oldConsoleLog.apply(this, items);
-        items.forEach(function (item, i) {
-          if (isElement(item)) {
-            items[i] = item.outerHTML
-              .replace(/</g, "&lt;")
-              .replace(/\\\//g, "/");
-          } else if (typeof item === "object") {
-            items[i] = JSON.stringify(item, null, 4);
-          } else {
-            items[i] = item;
-          }
-        });
-        consoleOutput.innerHTML += items.join(" ") + "<br />";
+      console.log = function (...inputs) {
+        var input = inputs[0]; // only one input from input box
+        var output = "";
+        oldConsoleLog.apply(this, inputs);
+        output = eval(input);
+        if (isElement(output)) {
+          output = output.outerHTML.replace(/</g, "&lt;").replace(/\\\//g, "/");
+        } else if (typeof output === "object") {
+          output = JSON.stringify(output, null, 4);
+        }
+        // NOTE: by NOT wrapping the preceding lines in a try-catch, invalid input will NOT submit
+        consoleOutput.innerHTML +=
+          '<span style="background: black; color: lime;">' +
+          input +
+          "</span><br/>" +
+          '<span style="background: black; color: white;">' +
+          output +
+          "</span><br/><br/>";
       };
     }
 
+    function createInputBox() {
+      var inputBox = document.createElement("input");
+      inputBox.id = "inputBox_firefox-extension-console-log-element";
+      inputBox.placeholder = "console log input here";
+      inputBox.title = "enter x to hide this widget";
+      inputBox.style = inputBoxDefaultStyle;
+      inputBox.onkeyup = function (event) {
+        if (event.key === "Enter" || event.keyCode === 13) {
+          triggerInputToConsole();
+        } else if (event.key === "ArrowUp" || event.keyCode === 38) {
+          enterLastInput();
+        }
+      };
+      inputBox.onmouseenter = function () {
+        inputBox.style = inputBoxDefaultStyle + inputHoverStyle;
+        inputBox.focus();
+      };
+      inputBox.onmouseleave = function () {
+        inputBox.style = inputBoxDefaultStyle;
+      };
+      return inputBox;
+    }
+
+    function createInputButton() {
+      var inputButton = document.createElement("button");
+      inputButton.id = "inputButton_firefox-extension-console-log-element";
+      inputButton.innerText = "Send command";
+      inputButton.title = "enter x to hide this widget";
+      inputButton.style = inputButtonDefaultStyle;
+      inputButton.onclick = function () {
+        triggerInputToConsole();
+        inputBox.focus();
+      };
+      inputButton.onmouseenter = function () {
+        inputButton.style = inputButtonDefaultStyle + inputHoverStyle;
+        if (inputBox.value === "") {
+          inputBox.focus();
+        }
+      };
+      inputButton.onmouseleave = function () {
+        inputButton.style = inputButtonDefaultStyle;
+      };
+      return inputButton;
+    }
+
+    function createConsoleOutput() {
+      var consoleOutput = document.createElement("pre");
+      consoleOutput.id = "output_firefox-extension-console-log-element";
+      consoleOutput.style =
+        "margin-top: 1px !important; max-height: 100px !important; overflow: scroll !important; width: 90vw !important; background: black !important; color: white !important; border: none !important; border-radius: 0.3rem !important; padding: 0 !important;";
+      return consoleOutput;
+    }
+
+    function createConsoleLogWidget() {
+      // put the elements together:
+      var theWholeThingDiv = document.createElement("div");
+      theWholeThingDiv.id = "firefox-extension-console-log-element";
+      theWholeThingDiv.style = widgetDefaultStyle + "visibility: hidden;";
+      inputGroupDiv.appendChild(inputBox);
+      inputGroupDiv.appendChild(inputButton);
+      theWholeThingDiv.appendChild(inputGroupDiv);
+      theWholeThingDiv.appendChild(consoleOutput);
+      document.body.appendChild(theWholeThingDiv);
+      return theWholeThingDiv;
+    }
+
     function isElement(element) {
-      return element instanceof Element || element instanceof HTMLDocument;
+      return (
+        element &&
+        (element instanceof Element || element instanceof HTMLDocument)
+      );
     }
 
     function triggerInputToConsole() {
       var consoleInput = inputBox.value;
-      inputToConsole(consoleInput);
-      clearInput();
+      try {
+        inputToConsole(consoleInput);
+        clearInput();
+      } catch (e) {
+        makeInputGroupWobble();
+      }
     }
 
     function inputToConsole(stringInput) {
       lastInput = stringInput;
-      // ignore empty input:
-      if (stringInput === "") return;
-      // handle clear():
-      if (stringInput === "clear()") {
-        consoleOutput.innerHTML = "";
-        // console.log(eval(stringInput));
+      if (stringInput === "") return; // ignore empty input
+      if (handledClear(stringInput) || handledCustomCommandX(stringInput)) {
         return;
       }
-      // handle special custom command x:
+
+      console.log(stringInput);
+      // auto-scroll to last output:
+      consoleOutput.scrollTop = consoleOutput.scrollHeight;
+      consoleOutput.scrollIntoView();
+    }
+
+    function handledClear(stringInput) {
+      if (stringInput === "clear()") {
+        consoleOutput.innerHTML = "";
+        return true;
+      }
+      return false;
+    }
+
+    function handledCustomCommandX(stringInput) {
       if (
         stringInput === "x" ||
         stringInput === '"x"' ||
         stringInput === "'x'"
       ) {
         var confirmed = confirm("Do you want to hide this console log widget?");
-        if (!confirmed) return; // (cancelled)
-        consoleOutput.innerHTML = "";
+        if (!confirmed) return false; // (cancelled)
         theWholeThingDiv.hidden = true;
         theWholeThingDiv.style = widgetDefaultStyle + "visibility: hidden;";
-        return;
+        return true;
       }
-      // display input:
-      console.log(
-        '<span style="background: black; color: lime;">' +
-          stringInput +
-          "</span>"
-      );
-      try {
-        // display evaluated output:
-        var evaluatedOutput = eval(stringInput);
-        if (evaluatedOutput === undefined) {
-          console.log("undefined");
-        } else {
-          console.log(evaluatedOutput);
-        }
-      } catch (e) {
-        // display error stack:
-        console.log(e.stack);
+      return false;
+    }
+
+    function clearInput() {
+      inputBox.value = "";
+    }
+
+    function makeInputGroupWobble() {
+      var wobbleCss = document.createTextNode(`.wobble {
+        animation: wobble 0.5s;
       }
-      // extra line for separation (a personal choice):
-      console.log();
-      // auto-scroll to last output:
-      consoleOutput.scrollTop = consoleOutput.scrollHeight;
-      consoleOutput.scrollIntoView();
+      
+      @keyframes wobble {
+        0% { transform: rotate(-3deg); }
+        50% {transform: rotate(3deg); }
+        100% { transform: rotate(0deg); }
+      }`);
+      var style = document.createElement("style");
+      style.id = "wobble-css";
+      style.type = "text/css";
+      style.appendChild(wobbleCss);
+      document.body.appendChild(style);
+      inputGroupDiv.classList.add("wobble");
+      setTimeout(() => {
+        inputGroupDiv.classList.remove("wobble");
+      }, 500);
     }
 
     function enterLastInput() {
       inputBox.value = lastInput;
     }
 
-    function clearInput() {
-      inputBox.value = "";
+    function $(selector, el) {
+      // $(...) is a web console helper
+      if (!el) {
+        el = document;
+      }
+      return el.querySelector(selector);
+    }
+
+    function $$(selector, el) {
+      // $$(...) is a web console helper
+      if (!el) {
+        el = document;
+      }
+      return el.querySelectorAll(selector);
     }
   })();
 }
