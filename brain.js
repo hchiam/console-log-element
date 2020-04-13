@@ -118,7 +118,7 @@ function createConsoleLog() {
     function createInputButton() {
       var inputButton = document.createElement("button");
       inputButton.id = "inputButton_firefox-extension-console-log-element";
-      inputButton.innerText = "Send to console log";
+      inputButton.innerText = "Send command";
       inputButton.title = "enter x to hide this widget";
       inputButton.style = inputButtonDefaultStyle;
       inputButton.onclick = function () {
