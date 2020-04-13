@@ -84,7 +84,7 @@ function createConsoleLog() {
     var consoleOutput = document.createElement("pre");
     consoleOutput.id = "output_firefox-extension-console-log-element";
     consoleOutput.style =
-      "margin-top: 1px !important; max-height: 100px !important; overflow: scroll !important; background: black !important; color: white !important; border: none !important; border-radius: 0.3rem !important; padding: 0 !important;";
+      "margin-top: 1px !important; max-height: 100px !important; overflow: scroll !important; width: 100% !important; background: black !important; color: white !important; border: none !important; border-radius: 0.3rem !important; padding: 0 !important;";
 
     // put the elements together:
     var theWholeThingDiv = document.createElement("div");
