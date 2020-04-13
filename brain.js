@@ -51,8 +51,8 @@ function createConsoleLog() {
       "margin-left: 0 !important; border-radius: 0 0.2rem 0.2rem 0 !important;";
     var inputHoverStyle = "background: lime; color: black;";
 
-    var inputGroupdDiv = document.createElement("div");
-    inputGroupdDiv.style =
+    var inputGroupDiv = document.createElement("div");
+    inputGroupDiv.style =
       "border-radius: 0.3rem !important; display: inline-block !important; border: 2px solid lightgrey !important; padding: 0 !important;";
 
     var inputBox = document.createElement("input");
@@ -103,9 +103,9 @@ function createConsoleLog() {
     var theWholeThingDiv = document.createElement("div");
     theWholeThingDiv.id = "firefox-extension-console-log-element";
     theWholeThingDiv.style = widgetDefaultStyle + "visibility: hidden;";
-    inputGroupdDiv.appendChild(inputBox);
-    inputGroupdDiv.appendChild(inputButton);
-    theWholeThingDiv.appendChild(inputGroupdDiv);
+    inputGroupDiv.appendChild(inputBox);
+    inputGroupDiv.appendChild(inputButton);
+    theWholeThingDiv.appendChild(inputGroupDiv);
     theWholeThingDiv.appendChild(consoleOutput);
     document.body.appendChild(theWholeThingDiv);
 
