@@ -1,11 +1,11 @@
 createConsoleLog(); // to view previous logs, it'll track console log in the background
 
-browser.runtime.onMessage.addListener((results) => {
-  const showConsoleLogElement = results.showConsoleLogElement;
-  if (showConsoleLogElement) {
-    showConsoleLog();
-  }
-});
+// browser.runtime.onMessage.addListener((results) => {
+//   const showConsoleLogElement = results.showConsoleLogElement;
+//   if (showConsoleLogElement) {
+//     showConsoleLog();
+//   }
+// });
 
 function showConsoleLog() {
   var widgetDefaultStyle =
@@ -152,29 +152,38 @@ function createConsoleLog() {
 
     function inputToConsole(stringInput) {
       lastInput = stringInput;
-      // ignore empty input:
-      if (stringInput === "") return;
-      // handle clear():
+      if (stringInput === "") return; // ignore empty input
+      var clr = handledClear(stringInput);
+      var x = handledCustomCommandX(stringInput);
+      if (clr || x) return;
+
+      console.log(stringInput);
+      // auto-scroll to last output:
+      consoleOutput.scrollTop = consoleOutput.scrollHeight;
+      consoleOutput.scrollIntoView();
+    }
+
+    function handledClear(stringInput) {
       if (stringInput === "clear()") {
         consoleOutput.innerHTML = "";
-        return;
+        return true;
       }
-      // handle special custom command x:
+      return false;
+    }
+
+    function handledCustomCommandX(stringInput) {
       if (
         stringInput === "x" ||
         stringInput === '"x"' ||
         stringInput === "'x'"
       ) {
         var confirmed = confirm("Do you want to hide this console log widget?");
-        if (!confirmed) return; // (cancelled)
+        if (!confirmed) return false; // (cancelled)
         theWholeThingDiv.hidden = true;
         theWholeThingDiv.style = widgetDefaultStyle + "visibility: hidden;";
-        return;
+        return true;
       }
-      console.log(stringInput);
-      // auto-scroll to last output:
-      consoleOutput.scrollTop = consoleOutput.scrollHeight;
-      consoleOutput.scrollIntoView();
+      return false;
     }
 
     function enterLastInput() {
