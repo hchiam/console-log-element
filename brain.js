@@ -1,9 +1,22 @@
+createConsoleLog(); // to view previous logs, it'll track console log in the background
+
 browser.runtime.onMessage.addListener((results) => {
-  const toldToCreateConsoleLogElement = results.shouldCreateConsoleLogElement;
-  if (toldToCreateConsoleLogElement) {
-    createConsoleLog();
+  const showConsoleLogElement = results.showConsoleLogElement;
+  if (showConsoleLogElement) {
+    showConsoleLog();
   }
 });
+
+function showConsoleLog() {
+  var widgetDefaultStyle =
+    "z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important; visibility: visible;";
+
+  var theWholeThingDiv = document.getElementById(
+    "firefox-extension-console-log-element"
+  );
+  theWholeThingDiv.hidden = false;
+  theWholeThingDiv.style = widgetDefaultStyle;
+}
 
 /* This creates an interactive console log that you can view without opening the actual web dev tools console log. */
 function createConsoleLog() {
@@ -89,7 +102,7 @@ function createConsoleLog() {
     // put the elements together:
     var theWholeThingDiv = document.createElement("div");
     theWholeThingDiv.id = "firefox-extension-console-log-element";
-    theWholeThingDiv.style = widgetDefaultStyle;
+    theWholeThingDiv.style = widgetDefaultStyle + "visibility: hidden;";
     inputGroupdDiv.appendChild(inputBox);
     inputGroupdDiv.appendChild(inputButton);
     theWholeThingDiv.appendChild(inputGroupdDiv);
@@ -154,7 +167,6 @@ function createConsoleLog() {
       ) {
         var confirmed = confirm("Do you want to hide this console log widget?");
         if (!confirmed) return; // (cancelled)
-        consoleOutput.innerHTML = "";
         theWholeThingDiv.hidden = true;
         theWholeThingDiv.style = widgetDefaultStyle + "visibility: hidden;";
         return;
