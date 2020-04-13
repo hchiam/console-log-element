@@ -105,7 +105,11 @@ function createConsoleLog() {
       console.log = function (...items) {
         oldConsoleLog.apply(this, items);
         items.forEach(function (item, i) {
-          if (typeof item === "object") {
+          if (isElement(item)) {
+            items[i] = item.outerHTML
+              .replace(/</g, "&lt;")
+              .replace(/\\\//g, "/");
+          } else if (typeof item === "object") {
             items[i] = JSON.stringify(item, null, 4);
           } else {
             items[i] = item;
@@ -113,6 +117,10 @@ function createConsoleLog() {
         });
         consoleOutput.innerHTML += items.join(" ") + "<br />";
       };
+    }
+
+    function isElement(element) {
+      return element instanceof Element || element instanceof HTMLDocument;
     }
 
     function triggerInputToConsole() {
