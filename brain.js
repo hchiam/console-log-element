@@ -256,17 +256,21 @@ function createConsoleLog() {
       var wobbleCss = document.createTextNode(\`.wobble {
         animation: wobble 0.5s;
       }
-      
       @keyframes wobble {
         0% { transform: rotate(-3deg); }
         50% {transform: rotate(3deg); }
         100% { transform: rotate(0deg); }
       }\`);
-      var style = document.createElement("style");
-      style.id = "wobble-css";
-      style.type = "text/css";
-      style.appendChild(wobbleCss);
-      document.body.appendChild(style);
+
+      var styleAlreadyExists = document.getElementById("wobble-css");
+      if (!styleAlreadyExists) {
+        var style = document.createElement("style");
+        style.id = "wobble-css";
+        style.type = "text/css";
+        style.appendChild(wobbleCss);
+        document.body.appendChild(style);
+      }
+
       inputGroupDiv.classList.add("wobble");
       setTimeout(() => {
         inputGroupDiv.classList.remove("wobble");
