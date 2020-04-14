@@ -2,11 +2,36 @@ browser.runtime.onMessage.addListener((results) => {
   const showConsoleLogElement = results.showConsoleLogElement;
   if (showConsoleLogElement) {
     createConsoleLog();
+    showConsoleLog();
   }
 });
 
+function showConsoleLog() {
+  (function () {
+    // use an IIFE to isolate variables
+    var widgetDefaultStyle =
+      "z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important; visibility: visible;";
+
+    var theWholeThingDiv = document.getElementById(
+      "firefox-extension-console-log-element"
+    );
+    theWholeThingDiv.hidden = false;
+    theWholeThingDiv.style = widgetDefaultStyle;
+    theWholeThingDiv.scrollIntoView();
+    document
+      .getElementById("inputBox_firefox-extension-console-log-element")
+      .focus();
+  })();
+}
+
 function createConsoleLog() {
+  var scriptAlreadyExists = document.getElementById(
+    "script_firefox-extension-console-log-element"
+  );
+  if (scriptAlreadyExists) return;
+
   var script = document.createElement("script");
+  script.id = "script_firefox-extension-console-log-element";
   script.innerHTML = `
   /* This creates an interactive console log that you can view without opening the actual web dev tools console log. */
 
