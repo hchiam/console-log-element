@@ -1,32 +1,15 @@
-createConsoleLog(); // to view previous logs, it'll track console log in the background
-
 browser.runtime.onMessage.addListener((results) => {
   const showConsoleLogElement = results.showConsoleLogElement;
   if (showConsoleLogElement) {
-    showConsoleLog();
+    createConsoleLog();
   }
 });
 
-function showConsoleLog() {
-  (function () {
-    // use an IIFE to isolate variables
-    var widgetDefaultStyle =
-      "z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important; visibility: visible;";
-
-    var theWholeThingDiv = document.getElementById(
-      "firefox-extension-console-log-element"
-    );
-    theWholeThingDiv.hidden = false;
-    theWholeThingDiv.style = widgetDefaultStyle;
-    theWholeThingDiv.scrollIntoView();
-    document
-      .getElementById("inputBox_firefox-extension-console-log-element")
-      .focus();
-  })();
-}
-
-/* This creates an interactive console log that you can view without opening the actual web dev tools console log. */
 function createConsoleLog() {
+  var script = document.createElement("script");
+  script.innerHTML = `
+  /* This creates an interactive console log that you can view without opening the actual web dev tools console log. */
+
   (function () {
     // use an IIFE to isolate variables
 
@@ -70,29 +53,54 @@ function createConsoleLog() {
 
     inputBox.focus();
 
-    redefineConsoleLog();
+    redefineConsoleActions();
 
-    function redefineConsoleLog() {
+    function redefineConsoleActions() {
       var oldConsoleLog = console.log;
-      console.log = function (...inputs) {
-        var input = inputs[0]; // only one input from input box
-        var output = "";
-        oldConsoleLog.apply(this, inputs);
-        output = eval(input);
-        if (isElement(output)) {
-          output = output.outerHTML.replace(/</g, "&lt;").replace(/\\\//g, "/");
-        } else if (typeof output === "object") {
-          output = JSON.stringify(output, null, 4);
-        }
-        // NOTE: by NOT wrapping the preceding lines in a try-catch, invalid input will NOT submit
-        consoleOutput.innerHTML +=
-          '<span style="background: black; color: lime;">' +
-          input +
-          "</span><br/>" +
-          '<span style="background: black; color: white;">' +
-          output +
-          "</span><br/><br/>";
+      var oldConsoleInfo = console.info;
+      var oldConsoleWarn = console.warn;
+      var oldConsoleError = console.error;
+      var oldConsoleDebug = console.debug;
+
+      console.log = function () {
+        oldConsoleLog.call(console, ...arguments);
+        outputToWidget(arguments[0]);
       };
+      console.info = function () {
+        oldConsoleInfo.call(console, ...arguments);
+        outputToWidget(arguments[0]);
+      };
+      console.warn = function () {
+        oldConsoleWarn.call(console, ...arguments);
+        outputToWidget(arguments[0]);
+      };
+      console.error = function () {
+        oldConsoleError.call(console, ...arguments);
+        outputToWidget(arguments[0]);
+      };
+      console.debug = function () {
+        oldConsoleDebug.call(console, ...arguments);
+        outputToWidget(arguments[0]);
+      };
+    }
+
+    function outputToWidget(input) {
+      // (only one input from input box)
+      var output = "";
+      output = eval(input);
+      if (isElement(output)) {
+        output = output.outerHTML.replace(/</g, "&lt;").replace(/\\\//g, "/");
+      } else if (typeof output === "object") {
+        output = JSON.stringify(output, null, 4);
+      }
+      // NOTE: by NOT wrapping the preceding lines in a try-catch, invalid input will NOT submit
+      consoleOutput.innerHTML +=
+        '<span style="background: black; color: lime;">' +
+        input +
+        "</span><br/>" +
+        '<span style="background: black; color: white;">' +
+        output +
+        "</span><br/><br/>";
     }
 
     function createInputBox() {
@@ -152,7 +160,7 @@ function createConsoleLog() {
       // put the elements together:
       var theWholeThingDiv = document.createElement("div");
       theWholeThingDiv.id = "firefox-extension-console-log-element";
-      theWholeThingDiv.style = widgetDefaultStyle + "visibility: hidden;";
+      theWholeThingDiv.style = widgetDefaultStyle;
       inputGroupDiv.appendChild(inputBox);
       inputGroupDiv.appendChild(inputButton);
       theWholeThingDiv.appendChild(inputGroupDiv);
@@ -220,7 +228,7 @@ function createConsoleLog() {
     }
 
     function makeInputGroupWobble() {
-      var wobbleCss = document.createTextNode(`.wobble {
+      var wobbleCss = document.createTextNode(\`.wobble {
         animation: wobble 0.5s;
       }
       
@@ -228,7 +236,7 @@ function createConsoleLog() {
         0% { transform: rotate(-3deg); }
         50% {transform: rotate(3deg); }
         100% { transform: rotate(0deg); }
-      }`);
+      }\`);
       var style = document.createElement("style");
       style.id = "wobble-css";
       style.type = "text/css";
@@ -260,4 +268,6 @@ function createConsoleLog() {
       return el.querySelectorAll(selector);
     }
   })();
+  `;
+  document.body.appendChild(script);
 }
