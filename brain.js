@@ -1,7 +1,8 @@
+createConsoleLog();
+
 browser.runtime.onMessage.addListener((results) => {
   const showConsoleLogElement = results.showConsoleLogElement;
   if (showConsoleLogElement) {
-    createConsoleLog();
     showConsoleLog();
   }
 });
@@ -10,7 +11,7 @@ function showConsoleLog() {
   (function () {
     // use an IIFE to isolate variables
     var widgetDefaultStyle =
-      "z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important; visibility: visible;";
+      "all: initial; z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important; visibility: visible; font-family: avenir, arial, tahoma, monospace !important; font-size: 16px !important; margin-left: 5px !important; transition: 0.25s !important;";
 
     var theWholeThingDiv = document.getElementById(
       "firefox-extension-console-log-element"
@@ -18,9 +19,13 @@ function showConsoleLog() {
     theWholeThingDiv.hidden = false;
     theWholeThingDiv.style = widgetDefaultStyle;
     theWholeThingDiv.scrollIntoView();
-    document
-      .getElementById("inputBox_firefox-extension-console-log-element")
-      .focus();
+    var inputBox = document.getElementById(
+      "inputBox_firefox-extension-console-log-element"
+    );
+    inputBox.value = "";
+    setTimeout(() => {
+      inputBox.focus();
+    }, 100);
   })();
 }
 
@@ -42,7 +47,7 @@ function createConsoleLog() {
       "firefox-extension-console-log-element"
     );
     var widgetDefaultStyle =
-      "z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important;";
+    "all: initial; z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important; visibility: visible; font-family: avenir, arial, tahoma, monospace !important; font-size: 1.5rem !important; margin-left: 5px !important; transition: 0.25s !important;";
     if (elementAlreadyExists) {
       elementAlreadyExists.hidden = false;
       elementAlreadyExists.style = widgetDefaultStyle;
@@ -64,7 +69,7 @@ function createConsoleLog() {
     var inputButtonDefaultStyle =
       defaultStyle +
       "margin-left: 0 !important; border-radius: 0 0.2rem 0.2rem 0 !important;";
-    var inputHoverStyle = "background: lime; color: black;";
+    var inputHoverStyle = "background: lime; color: black !important;";
 
     var inputGroupDiv = document.createElement("div");
     inputGroupDiv.style =
@@ -110,22 +115,44 @@ function createConsoleLog() {
     }
 
     function outputToWidget(input) {
+      // to avoid recursive selection on body, temporarily take the widget itself out
+      var temp = document.getElementById("firefox-extension-console-log-element");
+      document.getElementById("firefox-extension-console-log-element").remove();
       // (only one input from input box)
       var output = "";
-      output = eval(input);
-      if (isElement(output)) {
-        output = output.outerHTML.replace(/</g, "&lt;").replace(/\\\//g, "/");
-      } else if (typeof output === "object") {
-        output = JSON.stringify(output, null, 4);
+      try {
+        output = eval(input);
+        if (isElement(output)) {
+          output = output.outerHTML.replace(/</g, "&lt;").replace(/\\\//g, "/");
+        } else if (typeof output === "object") {
+          output = JSON.stringify(output, null, 4);
+        } else if (typeof output === "string") {
+          output = output.replace(/</g, "&lt;").replace(/\\\//g, "/");
+        }
+        input = String(input).replace(/</g, "&lt;").replace(/\\\//g, "/");
+        consoleOutput.innerHTML +=
+          '<span style="background: black; color: lime;">' +
+          input +
+          "</span><br/>" +
+          '<span style="background: black; color: white;">' +
+          output +
+          "</span><br/><br/>";
+        // only clear input if parsing worked:
+        clearInput();
+      } catch(e) {
+        inputBox.value = input;
+        consoleOutput.innerHTML +=
+          '<span style="background: black; color: lime;">' +
+          input +
+          "</span><br/>" +
+          '<span style="background: black; color: white;">' +
+          "<small><em>" + e + "</em></small>" +
+          "</span><br/><br/>";
+        makeInputGroupWobble();
       }
-      // NOTE: by NOT wrapping the preceding lines in a try-catch, invalid input will NOT submit
-      consoleOutput.innerHTML +=
-        '<span style="background: black; color: lime;">' +
-        input +
-        "</span><br/>" +
-        '<span style="background: black; color: white;">' +
-        output +
-        "</span><br/><br/>";
+      // put the widget back
+      document.body.appendChild(temp);
+      inputBox.focus();
     }
 
     function createInputBox() {
@@ -134,6 +161,7 @@ function createConsoleLog() {
       inputBox.placeholder = "console log input here";
       inputBox.title = "enter x to hide this widget";
       inputBox.style = inputBoxDefaultStyle;
+      inputBox.setAttribute("autocapitalize", "off");
       inputBox.onkeyup = function (event) {
         if (event.key === "Enter" || event.keyCode === 13) {
           triggerInputToConsole();
@@ -174,10 +202,22 @@ function createConsoleLog() {
     }
 
     function createConsoleOutput() {
+      var defaultOutputStyle = 
+      "margin-top: 1px !important; max-height: 100px !important; overflow: scroll !important; width: 90vw !important; background: black !important; color: white !important; border: none !important; border-radius: 0.3rem !important; padding: 5px !important;";
       var consoleOutput = document.createElement("pre");
       consoleOutput.id = "output_firefox-extension-console-log-element";
-      consoleOutput.style =
-        "margin-top: 1px !important; max-height: 100px !important; overflow: scroll !important; width: 90vw !important; background: black !important; color: white !important; border: none !important; border-radius: 0.3rem !important; padding: 0 !important;";
+      consoleOutput.style = defaultOutputStyle;
+      consoleOutput.onclick = function () {
+        var expandedHeight = "90vh";
+        var shouldCollapse = (consoleOutput.style.height === expandedHeight || consoleOutput.innerText === "");
+        if (shouldCollapse) {
+          consoleOutput.style = defaultOutputStyle;
+        } else {
+          consoleOutput.style.height = "90vh";
+          consoleOutput.style.maxHeight = "90vh";
+          consoleOutput.style.opacity = 0.9;
+        }
+      };
       return consoleOutput;
     }
 
@@ -185,7 +225,7 @@ function createConsoleLog() {
       // put the elements together:
       var theWholeThingDiv = document.createElement("div");
       theWholeThingDiv.id = "firefox-extension-console-log-element";
-      theWholeThingDiv.style = widgetDefaultStyle;
+      theWholeThingDiv.style = widgetDefaultStyle + "visibility: hidden;";
       inputGroupDiv.appendChild(inputBox);
       inputGroupDiv.appendChild(inputButton);
       theWholeThingDiv.appendChild(inputGroupDiv);
@@ -203,9 +243,9 @@ function createConsoleLog() {
 
     function triggerInputToConsole() {
       var consoleInput = inputBox.value;
+      if (consoleInput === "") makeInputGroupWobble();
       try {
         inputToConsole(consoleInput);
-        clearInput();
       } catch (e) {
         makeInputGroupWobble();
       }
