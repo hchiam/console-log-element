@@ -142,6 +142,7 @@ function createConsoleLog() {
         clearInput();
       } catch(e) {
         inputBox.value = input;
+        updateInputRows();
         consoleOutput.innerHTML +=
           '<span style="background: black; color: lime;">' +
           input +
@@ -185,11 +186,6 @@ function createConsoleLog() {
         inputBox.style = inputBoxDefaultStyle;
       };
       return inputBox;
-    }
-
-    function updateInputRows() {
-      var newLineCharCount = (inputBox.value.match(/\\n/g) || []).length;
-      inputBox.setAttribute("rows", 1 + newLineCharCount);
     }
 
     function createInputButton() {
@@ -253,6 +249,11 @@ function createConsoleLog() {
         element &&
         (element instanceof Element || element instanceof HTMLDocument)
       );
+    }
+
+    function updateInputRows() {
+      var newLineCharCount = (inputBox.value.match(/\\n/g) || []).length;
+      inputBox.setAttribute("rows", 1 + newLineCharCount);
     }
 
     function triggerInputToConsole() {
