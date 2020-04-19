@@ -4,6 +4,8 @@
 
 Firefox Add-on page: <https://addons.mozilla.org/en-US/firefox/addon/console-log-element>
 
+[![icon](https://raw.githubusercontent.com/hchiam/console-log-element/master/console-log-element.png)](https://addons.mozilla.org/en-US/firefox/addon/console-log-element)
+
 Sometimes I wish I could just open the console log right on a mobile device.
 
 This simple add-on enables you to send commands to the console log without having to open the dev tools, even on mobile.
