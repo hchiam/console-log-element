@@ -208,6 +208,12 @@ function createConsoleLog() {
       inputButton.onmouseleave = function () {
         inputButton.style = inputButtonDefaultStyle;
       };
+      inputButton.onfocus = function () {
+        inputButton.style = inputButtonDefaultStyle + inputHoverStyle;
+      };
+      inputButton.onblur = function () {
+        inputButton.style = inputButtonDefaultStyle;
+      };
       return inputButton;
     }
 
