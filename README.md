@@ -18,6 +18,7 @@ Once installed, you can bring up the console log interface by clicking on the ad
 - Submit `"x"` to hide the interface.
 - Hit the up arrow to use your previous command.
 - To submit, hit the "Send command" button, or `Shift+Enter` or `Ctrl+Enter`.
+- Click on the output to expand/collapse it.
 
 ## Other links
 
