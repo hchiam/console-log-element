@@ -19,3 +19,9 @@ Live CodePen demo: <https://codepen.io/hchiam/pen/ZEbYgQG>
 GitHub backup code (_note: may be out of date_): <https://github.com/hchiam/learning-js/blob/master/consoleLogElement.js>
 
 Learn to make your own Firefox add-on: <https://github.com/hchiam/learning-firefox-extension>
+
+Useful pages to use when debugging the project itself locally:
+
+- [about:addons](about:addons)
+
+- [about:debugging#/runtime/this-firefox](about:debugging#/runtime/this-firefox)
