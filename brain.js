@@ -23,6 +23,7 @@ function showConsoleLog() {
       "inputBox_firefox-extension-console-log-element"
     );
     inputBox.value = "";
+    inputBox.setAttribute("rows", 1);
     setTimeout(() => {
       inputBox.focus();
     }, 100);
