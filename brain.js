@@ -72,8 +72,9 @@ function createConsoleLog() {
     var inputHoverStyle = "background: lime; color: black !important;";
 
     var inputGroupDiv = document.createElement("div");
+    inputGroupDiv.id = "inputGroup_firefox-extension-console-log-element";
     inputGroupDiv.style =
-      "border-radius: 0.3rem !important; display: inline-block !important; border: 2px solid lightgrey !important; padding: 0 !important;";
+      "border-radius: 0.3rem !important; display: grid !important; grid-template: auto / auto 15ch; border: 2px solid lightgrey !important; padding: 0 !important;";
 
     // create elements:
     var inputBox = createInputBox();
@@ -156,16 +157,23 @@ function createConsoleLog() {
     }
 
     function createInputBox() {
-      var inputBox = document.createElement("input");
+      var inputBox = document.createElement("textarea");
       inputBox.id = "inputBox_firefox-extension-console-log-element";
       inputBox.placeholder = "console log input here";
       inputBox.title = "enter x to hide this widget";
       inputBox.style = inputBoxDefaultStyle;
       inputBox.setAttribute("autocapitalize", "off");
+      inputBox.setAttribute("rows", 1);
       inputBox.onkeyup = function (event) {
-        if (event.key === "Enter" || event.keyCode === 13) {
+        var holdingShiftOrCtrl = event.shiftKey === true || event.ctrlKey === true;
+        var hitEnter = event.key === "Enter" || event.keyCode === 13;
+        var hitDelete = event.key === "Delete" || event.keyCode === 8 || event.keyCode === 46;
+        var hitArrowUp = event.key === "ArrowUp" || event.keyCode === 38;
+        if (holdingShiftOrCtrl && hitEnter) {
           triggerInputToConsole();
-        } else if (event.key === "ArrowUp" || event.keyCode === 38) {
+        } else if (hitEnter || hitDelete) {
+          updateInputRows();
+        } else if (inputBox.value === "" && hitArrowUp) {
           enterLastInput();
         }
       };
@@ -179,6 +187,11 @@ function createConsoleLog() {
       return inputBox;
     }
 
+    function updateInputRows() {
+      var newLineCharCount = (inputBox.value.match(/\\n/g) || []).length;
+      inputBox.setAttribute("rows", 1 + newLineCharCount);
+    }
+
     function createInputButton() {
       var inputButton = document.createElement("button");
       inputButton.id = "inputButton_firefox-extension-console-log-element";
@@ -187,6 +200,7 @@ function createConsoleLog() {
       inputButton.style = inputButtonDefaultStyle;
       inputButton.onclick = function () {
         triggerInputToConsole();
+        updateInputRows();
         inputBox.focus();
       };
       inputButton.onmouseenter = function () {
@@ -252,6 +266,7 @@ function createConsoleLog() {
     }
 
     function inputToConsole(stringInput) {
+      stringInput = stringInput.trim();
       lastInput = stringInput;
       if (stringInput === "") return; // ignore empty input
       if (handledClear(stringInput) || handledCustomCommandX(stringInput)) {
@@ -267,6 +282,7 @@ function createConsoleLog() {
     function handledClear(stringInput) {
       if (stringInput === "clear()") {
         consoleOutput.innerHTML = "";
+        clearInput();
         return true;
       }
       return false;

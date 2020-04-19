@@ -10,7 +10,14 @@ Sometimes I wish I could just open the console log right on a mobile device.
 
 This simple add-on enables you to send commands to the console log without having to open the dev tools, even on mobile.
 
-Once installed, click on the add-on icon and button to bring up the interface. You can hit enter to submit, hit the up-arrow to use your previous command, or submit "x" to hide the interface.
+Once installed, you can bring up the console log interface by clicking on the add-on icon and button. You can also:
+
+- Use `$()` as a shortcut for `document.querySelector()`, which works like jQuery's `$()`.
+- Use `$$()` as a shortcut for `document.querySelectorAll()`.
+- Use `clear()` to clear the output.
+- Submit `"x"` to hide the interface.
+- Hit the up arrow to use your previous command.
+- To submit, hit the "Send command" button, or `Shift+Enter` or `Ctrl+Enter`.
 
 ## Other links
 
