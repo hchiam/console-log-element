@@ -1,10 +1,14 @@
 # Console Log Element
 
+[![icon](https://raw.githubusercontent.com/hchiam/console-log-element/master/console-log-element.png)](https://addons.mozilla.org/en-US/firefox/addon/console-log-element)
+
 ![version](https://img.shields.io/github/release/hchiam/console-log-element) [![HitCount](http://hits.dwyl.com/hchiam/console-log-element.svg)](http://hits.dwyl.com/hchiam/console-log-element)
 
 Firefox Add-on page: <https://addons.mozilla.org/en-US/firefox/addon/console-log-element>
 
-[![icon](https://raw.githubusercontent.com/hchiam/console-log-element/master/console-log-element.png)](https://addons.mozilla.org/en-US/firefox/addon/console-log-element)
+Mobile device demo: <https://drive.google.com/open?id=1azFuTrUgoU6IBHb1BLJCQJlyYscMtdSS>
+
+Laptop demo: <https://drive.google.com/open?id=14s2YO8iKGH9RbK1AkUGLlHreGoV9Pcsn>
 
 Sometimes I wish I could just open the console log right on a mobile device.
 
