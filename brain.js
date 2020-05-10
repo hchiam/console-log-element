@@ -85,6 +85,8 @@ function createConsoleLog() {
 
     inputBox.focus();
 
+    var isFromInterface = false;
+
     redefineConsoleActions();
 
     function redefineConsoleActions() {
@@ -96,23 +98,28 @@ function createConsoleLog() {
 
       console.log = function () {
         oldConsoleLog.call(console, ...arguments);
-        outputToWidget(arguments[0]);
+        if (isFromInterface) outputToWidget(arguments[0]);
+        isFromInterface = false;
       };
       console.info = function () {
         oldConsoleInfo.call(console, ...arguments);
-        outputToWidget(arguments[0]);
+        if (isFromInterface) outputToWidget(arguments[0]);
+        isFromInterface = false;
       };
       console.warn = function () {
         oldConsoleWarn.call(console, ...arguments);
-        outputToWidget(arguments[0]);
+        if (isFromInterface) outputToWidget(arguments[0]);
+        isFromInterface = false;
       };
       console.error = function () {
         oldConsoleError.call(console, ...arguments);
-        outputToWidget(arguments[0]);
+        if (isFromInterface) outputToWidget(arguments[0]);
+        isFromInterface = false;
       };
       console.debug = function () {
         oldConsoleDebug.call(console, ...arguments);
-        outputToWidget(arguments[0]);
+        if (isFromInterface) outputToWidget(arguments[0]);
+        isFromInterface = false;
       };
     }
 
@@ -281,6 +288,7 @@ function createConsoleLog() {
         return;
       }
 
+      isFromInterface = true;
       console.log(stringInput);
       // auto-scroll to last output:
       consoleOutput.scrollTop = consoleOutput.scrollHeight;
