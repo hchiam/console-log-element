@@ -6,9 +6,8 @@ document.getElementById("do-it").addEventListener("click", function () {
 
 function setUpVersionNumberLink() {
   document.getElementById(
-    "version-number-message"
-  ).innerHTML = `You're using version <a id="releases" href="https://github.com/hchiam/console-log-element/releases" target="_blank"
-  title="See release notes">${browser.runtime.getManifest().version}</a>`;
+    "version-number"
+  ).firstChild.nodeValue = chrome.runtime.getManifest().version;
 
   document.getElementById("releases").addEventListener("click", function () {
     window.open(

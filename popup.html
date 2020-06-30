@@ -34,16 +34,20 @@
         color: black;
       }
 
-      #version-number-message {
+      #version-number-container {
         margin-bottom: 0;
       }
 
-      #version-number-message a:hover {
+      #version-number-container a:hover {
         color: lime;
       }
 
+      #version-number-container {
+        padding-top: 0.5rem;
+      }
+
       #do-it,
-      #version-number-message {
+      #version-number-container {
         font-size: 100%;
       }
     </style>
@@ -51,7 +55,16 @@
 
   <body>
     <button id="do-it">Show console log</button>
-    <p id="version-number-message"></p>
+    <div id="version-number-container" role="button">
+      You're using version
+      <a
+        id="version-number"
+        href="https://github.com/hchiam/console-log-element/releases"
+        target="_blank"
+        title="See release notes"
+        >?</a
+      >
+    </div>
     <script src="popup.js"></script>
   </body>
 </html>
