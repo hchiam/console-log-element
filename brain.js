@@ -171,7 +171,7 @@ function createConsoleLog() {
       inputBox.placeholder = "console log input here";
       inputBox.title = "enter x to hide this widget";
       inputBox.style = inputBoxDefaultStyle;
-      inputBox.setAttribute("autocapitalize", "off");
+      inputBox.setAttribute("autocapitalize", "none");
       inputBox.setAttribute("rows", 1);
       inputBox.onkeyup = function (event) {
         var holdingShiftOrCtrl = event.shiftKey === true || event.ctrlKey === true;
