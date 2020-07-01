@@ -2,7 +2,7 @@
   "description": "Creates a console log interface on the page",
   "manifest_version": 2,
   "name": "ConsoleLogElement",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "homepage_url": "https://github.com/hchiam/console-log-element",
   "icons": {
     "48": "console-log-element.png"

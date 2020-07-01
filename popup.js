@@ -8,14 +8,6 @@ function setUpVersionNumberLink() {
   document.getElementById(
     "version-number"
   ).firstChild.nodeValue = chrome.runtime.getManifest().version;
-
-  document.getElementById("releases").addEventListener("click", function () {
-    window.open(
-      "https://github.com/hchiam/console-log-element/releases",
-      "_blank"
-    );
-    window.close();
-  });
 }
 
 function createConsoleLog() {
