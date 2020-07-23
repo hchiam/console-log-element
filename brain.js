@@ -140,9 +140,9 @@ function createConsoleLog() {
         }
         input = String(input).replace(/</g, "&lt;").replace(/\\\//g, "/");
         consoleOutput.innerHTML +=
-          '<span style="background: black; color: lime;">' +
+          '<button style="background: black; color: lime;" onclick="document.getElementById(\\'inputBox_firefox-extension-console-log-element\\').value=this.innerHTML;">' +
           input +
-          "</span><br/>" +
+          "</button><br/>" +
           '<span style="background: black; color: white;">' +
           output +
           "</span><br/><br/>";
@@ -231,7 +231,8 @@ function createConsoleLog() {
       var consoleOutput = document.createElement("pre");
       consoleOutput.id = "output_firefox-extension-console-log-element";
       consoleOutput.style = defaultOutputStyle;
-      consoleOutput.onclick = function () {
+      consoleOutput.onclick = function (e) {
+        if (e.target !== consoleOutput) return;
         var expandedHeight = "90vh";
         var shouldCollapse = (consoleOutput.style.height === expandedHeight || consoleOutput.innerText === "");
         if (shouldCollapse) {
