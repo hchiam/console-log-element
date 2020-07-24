@@ -1,6 +1,6 @@
 # [![icon](https://raw.githubusercontent.com/hchiam/console-log-element/master/console-log-element.png)](https://addons.mozilla.org/en-US/firefox/addon/console-log-element) Console Log Element
 
-![version](https://img.shields.io/github/release/hchiam/console-log-element) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![HitCount](http://hits.dwyl.com/hchiam/console-log-element.svg)](http://hits.dwyl.com/hchiam/console-log-element)
+![version](https://img.shields.io/github/release/hchiam/console-log-element?style=flat-square) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT) [![HitCount](http://hits.dwyl.com/hchiam/console-log-element.svg)](http://hits.dwyl.com/hchiam/console-log-element)
 
 Firefox Add-on page: <https://addons.mozilla.org/en-US/firefox/addon/console-log-element>
 
