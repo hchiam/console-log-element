@@ -18,7 +18,7 @@ Once installed, you can bring up the console log interface by clicking on the ad
 - Use `$$()` as a shortcut for `document.querySelectorAll()`.
 - Use `clear()` to clear the output.
 - Submit `"x"` to hide the interface.
-- Hit the up arrow to use your previous command.
+- You can tap any previous (valid) input to quickly reuse it, and type less on mobile.
 - The input is a multiline textarea, so you can hit `Enter` to input multiple lines of code.
 - To submit, hit the "Send command" button, or `Shift+Enter` or `Ctrl+Enter`.
 - Click on the output to expand/collapse it.
