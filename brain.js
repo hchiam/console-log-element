@@ -140,7 +140,7 @@ function createConsoleLog() {
         }
         input = String(input).replace(/</g, "&lt;").replace(/\\\//g, "/");
         consoleOutput.innerHTML +=
-          '<button style="background: black; color: lime;" onclick="document.getElementById(\\'inputBox_firefox-extension-console-log-element\\').value=this.innerHTML;">' +
+          '<button style="background: black; color: lime; text-align: left;" onclick="document.getElementById(\\'inputBox_firefox-extension-console-log-element\\').value=this.innerText;">' +
           input +
           "</button><br/>" +
           '<span style="background: black; color: white;">' +
