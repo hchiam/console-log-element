@@ -11,7 +11,7 @@ function showConsoleLog() {
   (function () {
     // use an IIFE to isolate variables
     var widgetDefaultStyle =
-      "all: initial; z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important; visibility: visible; font-family: avenir, arial, tahoma, monospace !important; font-size: 16px !important; margin-left: 5px !important; transition: 0.25s !important;";
+      "all: initial; z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important; left: 0 !important; visibility: visible; font-family: avenir, arial, tahoma, monospace !important; font-size: 16px !important; margin-left: 5px !important; transition: 0.25s !important;";
 
     var theWholeThingDiv = document.getElementById(
       "firefox-extension-console-log-element"
