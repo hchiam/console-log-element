@@ -34,3 +34,7 @@ Useful pages to use when debugging the project itself locally:
 - [about:addons](about:addons)
 
 - [about:debugging#/runtime/this-firefox](about:debugging#/runtime/this-firefox)
+
+## Bookmarklet backup
+
+https://github.com/hchiam/console-log-element/tree/master/bookmarklet
