@@ -5,7 +5,7 @@ Because, right now, experimental add-ons are disabled on Android.
 https://bookmarklet-generator.surge.sh
 
 ```js
-javascript: (function () {
+javascript:(function () {
   createConsoleLog();
 
   showConsoleLog();
