@@ -1,6 +1,6 @@
 # Bookmarklet backup
 
-Because, right now, experimental add-ons seem disabled on Chrome on mobile. But even this might not work on mobile.
+Because, right now, experimental add-ons seem disabled on Chrome on mobile. But even this might not work on mobile, due to clipboard size limitation.
 
 https://console-log-element-bookmarklet-backup.surge.sh
 
