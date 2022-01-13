@@ -1,6 +1,6 @@
 # Bookmarklet backup
 
-Because, right now, experimental add-ons are disabled on Android.
+Because, right now, experimental add-ons seem disabled on mobile. But even this might not work on mobile.
 
 https://console-log-element-bookmarklet-backup.surge.sh
 
