@@ -1,32 +1,3 @@
-# Bookmarklet backup
-
-Because, right now, experimental add-ons seem disabled on Chrome on mobile. But even this might not work on mobile, due to clipboard size limitation.
-
-https://raw.githubusercontent.com/hchiam/console-log-element/master/bookmarklet/console-log-element.js
-
-```js
-javascript: fetch(
-  "https://raw.githubusercontent.com/hchiam/console-log-element/master/bookmarklet/console-log-element.js"
-)
-  .then((x) => x.text())
-  .then((x) => eval(x));
-```
-
-## Copy link to clipboard? (failed - too large)
-
-https://console-log-element-bookmarklet-backup.surge.sh
-
-```sh
-bash deploy # https://console-log-element-bookmarklet-backup.surge.sh
-```
-
-(also tried `minify console-log-element.js > console-log-element.min.js`)
-
-## Copy code to clipboard? (failed - too large)
-
-Encoded with https://bookmarklet-generator.surge.sh
-
-```js
 javascript:(function () {
   createConsoleLog();
 
@@ -34,20 +5,21 @@ javascript:(function () {
 
   function showConsoleLog() {
     (function () {
+      // use an IIFE to isolate variables
       var widgetDefaultStyle =
-        %22all: initial; z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important; left: 0 !important; visibility: visible; font-family: avenir, arial, tahoma, monospace !important; font-size: 16px !important; margin-left: 5px !important; transition: 0.25s !important;%22;
+        "all: initial; z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important; left: 0 !important; visibility: visible; font-family: avenir, arial, tahoma, monospace !important; font-size: 16px !important; margin-left: 5px !important; transition: 0.25s !important;";
 
       var theWholeThingDiv = document.getElementById(
-        %22firefox-extension-console-log-element%22
+        "firefox-extension-console-log-element"
       );
       theWholeThingDiv.hidden = false;
       theWholeThingDiv.style = widgetDefaultStyle;
       theWholeThingDiv.scrollIntoView();
       var inputBox = document.getElementById(
-        %22inputBox_firefox-extension-console-log-element%22
+        "inputBox_firefox-extension-console-log-element"
       );
-      inputBox.value = %22%22;
-      inputBox.setAttribute(%22rows%22, 1);
+      inputBox.value = "";
+      inputBox.setAttribute("rows", 1);
       setTimeout(() => {
         inputBox.focus();
       }, 100);
@@ -56,49 +28,52 @@ javascript:(function () {
 
   function createConsoleLog() {
     var scriptAlreadyExists = document.getElementById(
-      %22script_firefox-extension-console-log-element%22
+      "script_firefox-extension-console-log-element"
     );
     if (scriptAlreadyExists) return;
 
-    var script = document.createElement(%22script%22);
-    script.id = %22script_firefox-extension-console-log-element%22;
+    var script = document.createElement("script");
+    script.id = "script_firefox-extension-console-log-element";
     script.innerHTML = `
+  /* This creates an interactive console log that you can view without opening the actual web dev tools console log. */
 
   (function () {
+    // use an IIFE to isolate variables
 
     var elementAlreadyExists = document.getElementById(
-      %22firefox-extension-console-log-element%22
+      "firefox-extension-console-log-element"
     );
     var widgetDefaultStyle =
-    %22all: initial; z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important; visibility: visible; font-family: avenir, arial, tahoma, monospace !important; font-size: 1.5rem !important; margin-left: 5px !important; transition: 0.25s !important;%22;
+    "all: initial; z-index: 99999 !important; padding: 0 !important; position: fixed !important; bottom: 0 !important; visibility: visible; font-family: avenir, arial, tahoma, monospace !important; font-size: 1.5rem !important; margin-left: 5px !important; transition: 0.25s !important;";
     if (elementAlreadyExists) {
       elementAlreadyExists.hidden = false;
       elementAlreadyExists.style = widgetDefaultStyle;
       elementAlreadyExists.scrollIntoView();
       document
-        .getElementById(%22inputBox_firefox-extension-console-log-element%22)
+        .getElementById("inputBox_firefox-extension-console-log-element")
         .focus();
       return;
     }
 
-    var lastInput = %22%22;
+    var lastInput = "";
 
-    var darkMode = %22background: #333; color: lime;%22;
+    var darkMode = "background: #333; color: lime;";
     var defaultStyle =
-      darkMode + %22padding: 0.3rem !important; border: none !important;%22;
+      darkMode + "padding: 0.3rem !important; border: none !important;";
     var inputBoxDefaultStyle =
       defaultStyle +
-      %22margin-right: 0 !important; border-radius: 0.2rem 0 0 0.2rem !important; background: black;%22;
+      "margin-right: 0 !important; border-radius: 0.2rem 0 0 0.2rem !important; background: black;";
     var inputButtonDefaultStyle =
       defaultStyle +
-      %22margin-left: 0 !important; border-radius: 0 0.2rem 0.2rem 0 !important;%22;
-    var inputHoverStyle = %22background: lime; color: black !important;%22;
+      "margin-left: 0 !important; border-radius: 0 0.2rem 0.2rem 0 !important;";
+    var inputHoverStyle = "background: lime; color: black !important;";
 
-    var inputGroupDiv = document.createElement(%22div%22);
-    inputGroupDiv.id = %22inputGroup_firefox-extension-console-log-element%22;
+    var inputGroupDiv = document.createElement("div");
+    inputGroupDiv.id = "inputGroup_firefox-extension-console-log-element";
     inputGroupDiv.style =
-      %22border-radius: 0.3rem !important; display: grid !important; grid-template: auto %2F auto 15ch; border: 2px solid lightgrey !important; padding: 0 !important;%22;
+      "border-radius: 0.3rem !important; display: grid !important; grid-template: auto / auto 15ch; border: 2px solid lightgrey !important; padding: 0 !important;";
 
+    // create elements:
     var inputBox = createInputBox();
     var inputButton = createInputButton();
     var consoleOutput = createConsoleOutput();
@@ -145,61 +120,65 @@ javascript:(function () {
     }
 
     function outputToWidget(input) {
-      var temp = document.getElementById(%22firefox-extension-console-log-element%22);
-      document.getElementById(%22firefox-extension-console-log-element%22).remove();
-      var output = %22%22;
+      // to avoid recursive selection on body, temporarily take the widget itself out
+      var temp = document.getElementById("firefox-extension-console-log-element");
+      document.getElementById("firefox-extension-console-log-element").remove();
+      // (only one input from input box)
+      var output = "";
       try {
         output = eval(input);
         if (isElement(output)) {
-          output = output.outerHTML.replace(%2F<%2Fg, %22&lt;%22).replace(%2F\\\%2F%2Fg, %22%2F%22);
-        } else if (typeof output === %22object%22) {
+          output = output.outerHTML.replace(/</g, "&lt;").replace(/\\\//g, "/");
+        } else if (typeof output === "object") {
           output = JSON.stringify(output, null, 4);
-        } else if (typeof output === %22string%22) {
-          output = output.replace(%2F<%2Fg, %22&lt;%22).replace(%2F\\\%2F%2Fg, %22%2F%22);
+        } else if (typeof output === "string") {
+          output = output.replace(/</g, "&lt;").replace(/\\\//g, "/");
         }
-        input = String(input).replace(%2F<%2Fg, %22&lt;%22).replace(%2F\\\%2F%2Fg, %22%2F%22);
+        input = String(input).replace(/</g, "&lt;").replace(/\\\//g, "/");
         consoleOutput.innerHTML +=
-          '<button style=%22background: black; color: lime; text-align: left;%22 onclick=%22document.getElementById(\\'inputBox_firefox-extension-console-log-element\\').value=this.innerText;%22>' +
+          '<button style="background: black; color: lime; text-align: left;" onclick="document.getElementById(\\'inputBox_firefox-extension-console-log-element\\').value=this.innerText;">' +
           input +
-          %22<%2Fbutton><br%2F>%22 +
-          '<span style=%22background: black; color: white;%22>' +
+          "</button><br/>" +
+          '<span style="background: black; color: white;">' +
           output +
-          %22<%2Fspan><br%2F><br%2F>%22;
+          "</span><br/><br/>";
+        // only clear input if parsing worked:
         clearInput();
       } catch(e) {
         inputBox.value = input;
         updateInputRows();
         consoleOutput.innerHTML +=
-          '<span style=%22background: black; color: lime;%22>' +
+          '<span style="background: black; color: lime;">' +
           input +
-          %22<%2Fspan><br%2F>%22 +
-          '<span style=%22background: black; color: white;%22>' +
-          %22<small><em>%22 + e + %22<%2Fem><%2Fsmall>%22 +
-          %22<%2Fspan><br%2F><br%2F>%22;
+          "</span><br/>" +
+          '<span style="background: black; color: white;">' +
+          "<small><em>" + e + "</em></small>" +
+          "</span><br/><br/>";
         makeInputGroupWobble();
       }
+      // put the widget back
       document.body.appendChild(temp);
       inputBox.focus();
     }
 
     function createInputBox() {
-      var inputBox = document.createElement(%22textarea%22);
-      inputBox.id = %22inputBox_firefox-extension-console-log-element%22;
-      inputBox.placeholder = %22console log input here%22;
-      inputBox.title = %22enter x to hide this widget%22;
+      var inputBox = document.createElement("textarea");
+      inputBox.id = "inputBox_firefox-extension-console-log-element";
+      inputBox.placeholder = "console log input here";
+      inputBox.title = "enter x to hide this widget";
       inputBox.style = inputBoxDefaultStyle;
-      inputBox.setAttribute(%22autocapitalize%22, %22none%22);
-      inputBox.setAttribute(%22rows%22, 1);
+      inputBox.setAttribute("autocapitalize", "none");
+      inputBox.setAttribute("rows", 1);
       inputBox.onkeyup = function (event) {
         var holdingShiftOrCtrl = event.shiftKey === true || event.ctrlKey === true;
-        var hitEnter = event.key === %22Enter%22 || event.keyCode === 13;
-        var hitDelete = event.key === %22Delete%22 || event.keyCode === 8 || event.keyCode === 46;
-        var hitArrowUp = event.key === %22ArrowUp%22 || event.keyCode === 38;
+        var hitEnter = event.key === "Enter" || event.keyCode === 13;
+        var hitDelete = event.key === "Delete" || event.keyCode === 8 || event.keyCode === 46;
+        var hitArrowUp = event.key === "ArrowUp" || event.keyCode === 38;
         if (holdingShiftOrCtrl && hitEnter) {
           triggerInputToConsole();
         } else if (hitEnter || hitDelete) {
           updateInputRows();
-        } else if (inputBox.value === %22%22 && hitArrowUp) {
+        } else if (inputBox.value === "" && hitArrowUp) {
           enterLastInput();
         }
       };
@@ -214,10 +193,10 @@ javascript:(function () {
     }
 
     function createInputButton() {
-      var inputButton = document.createElement(%22button%22);
-      inputButton.id = %22inputButton_firefox-extension-console-log-element%22;
-      inputButton.innerText = %22Send command%22;
-      inputButton.title = %22enter x to hide this widget%22;
+      var inputButton = document.createElement("button");
+      inputButton.id = "inputButton_firefox-extension-console-log-element";
+      inputButton.innerText = "Send command";
+      inputButton.title = "enter x to hide this widget";
       inputButton.style = inputButtonDefaultStyle;
       inputButton.onclick = function () {
         triggerInputToConsole();
@@ -226,7 +205,7 @@ javascript:(function () {
       };
       inputButton.onmouseenter = function () {
         inputButton.style = inputButtonDefaultStyle + inputHoverStyle;
-        if (inputBox.value === %22%22) {
+        if (inputBox.value === "") {
           inputBox.focus();
         }
       };
@@ -244,19 +223,19 @@ javascript:(function () {
 
     function createConsoleOutput() {
       var defaultOutputStyle = 
-      %22margin-top: 1px !important; max-height: 100px !important; overflow: scroll !important; width: 90vw !important; background: black !important; color: white !important; border: none !important; border-radius: 0.3rem !important; padding: 5px !important;%22;
-      var consoleOutput = document.createElement(%22pre%22);
-      consoleOutput.id = %22output_firefox-extension-console-log-element%22;
+      "margin-top: 1px !important; max-height: 100px !important; overflow: scroll !important; width: 90vw !important; background: black !important; color: white !important; border: none !important; border-radius: 0.3rem !important; padding: 5px !important;";
+      var consoleOutput = document.createElement("pre");
+      consoleOutput.id = "output_firefox-extension-console-log-element";
       consoleOutput.style = defaultOutputStyle;
       consoleOutput.onclick = function (e) {
         if (e.target !== consoleOutput) return;
-        var expandedHeight = %2290vh%22;
-        var shouldCollapse = (consoleOutput.style.height === expandedHeight || consoleOutput.innerText === %22%22);
+        var expandedHeight = "90vh";
+        var shouldCollapse = (consoleOutput.style.height === expandedHeight || consoleOutput.innerText === "");
         if (shouldCollapse) {
           consoleOutput.style = defaultOutputStyle;
         } else {
-          consoleOutput.style.height = %2290vh%22;
-          consoleOutput.style.maxHeight = %2290vh%22;
+          consoleOutput.style.height = "90vh";
+          consoleOutput.style.maxHeight = "90vh";
           consoleOutput.style.opacity = 0.9;
         }
       };
@@ -264,9 +243,10 @@ javascript:(function () {
     }
 
     function createConsoleLogWidget() {
-      var theWholeThingDiv = document.createElement(%22div%22);
-      theWholeThingDiv.id = %22firefox-extension-console-log-element%22;
-      theWholeThingDiv.style = widgetDefaultStyle + %22visibility: hidden;%22;
+      // put the elements together:
+      var theWholeThingDiv = document.createElement("div");
+      theWholeThingDiv.id = "firefox-extension-console-log-element";
+      theWholeThingDiv.style = widgetDefaultStyle + "visibility: hidden;";
       inputGroupDiv.appendChild(inputBox);
       inputGroupDiv.appendChild(inputButton);
       theWholeThingDiv.appendChild(inputGroupDiv);
@@ -283,13 +263,13 @@ javascript:(function () {
     }
 
     function updateInputRows() {
-      var newLineCharCount = (inputBox.value.match(%2F\\n%2Fg) || []).length;
-      inputBox.setAttribute(%22rows%22, 1 + newLineCharCount);
+      var newLineCharCount = (inputBox.value.match(/\\n/g) || []).length;
+      inputBox.setAttribute("rows", 1 + newLineCharCount);
     }
 
     function triggerInputToConsole() {
       var consoleInput = inputBox.value;
-      if (consoleInput === %22%22) makeInputGroupWobble();
+      if (consoleInput === "") makeInputGroupWobble();
       try {
         inputToConsole(consoleInput);
       } catch (e) {
@@ -300,20 +280,21 @@ javascript:(function () {
     function inputToConsole(stringInput) {
       stringInput = stringInput.trim();
       lastInput = stringInput;
-      if (stringInput === %22%22) return;
+      if (stringInput === "") return; // ignore empty input
       if (handledClear(stringInput) || handledCustomCommandX(stringInput)) {
         return;
       }
 
       isFromInterface = true;
       console.log(stringInput);
+      // auto-scroll to last output:
       consoleOutput.scrollTop = consoleOutput.scrollHeight;
       consoleOutput.scrollIntoView();
     }
 
     function handledClear(stringInput) {
-      if (stringInput === %22clear()%22) {
-        consoleOutput.innerHTML = %22%22;
+      if (stringInput === "clear()") {
+        consoleOutput.innerHTML = "";
         clearInput();
         return true;
       }
@@ -323,21 +304,21 @@ javascript:(function () {
     function handledCustomCommandX(stringInput) {
       stringInput = stringInput.toLowerCase();
       if (
-        stringInput === %22x%22 ||
-        stringInput === '%22x%22' ||
-        stringInput === %22'x'%22
+        stringInput === "x" ||
+        stringInput === '"x"' ||
+        stringInput === "'x'"
       ) {
-        var confirmed = confirm(%22Do you want to hide this console log widget?%22);
-        if (!confirmed) return false;
+        var confirmed = confirm("Do you want to hide this console log widget?");
+        if (!confirmed) return false; // (cancelled)
         theWholeThingDiv.hidden = true;
-        theWholeThingDiv.style = widgetDefaultStyle + %22visibility: hidden;%22;
+        theWholeThingDiv.style = widgetDefaultStyle + "visibility: hidden;";
         return true;
       }
       return false;
     }
 
     function clearInput() {
-      inputBox.value = %22%22;
+      inputBox.value = "";
     }
 
     function makeInputGroupWobble() {
@@ -350,18 +331,18 @@ javascript:(function () {
         100% { transform: rotate(0deg); }
       }\`);
 
-      var styleAlreadyExists = document.getElementById(%22wobble-css%22);
+      var styleAlreadyExists = document.getElementById("wobble-css");
       if (!styleAlreadyExists) {
-        var style = document.createElement(%22style%22);
-        style.id = %22wobble-css%22;
-        style.type = %22text%2Fcss%22;
+        var style = document.createElement("style");
+        style.id = "wobble-css";
+        style.type = "text/css";
         style.appendChild(wobbleCss);
         document.body.appendChild(style);
       }
 
-      inputGroupDiv.classList.add(%22wobble%22);
+      inputGroupDiv.classList.add("wobble");
       setTimeout(() => {
-        inputGroupDiv.classList.remove(%22wobble%22);
+        inputGroupDiv.classList.remove("wobble");
       }, 500);
     }
 
@@ -370,6 +351,7 @@ javascript:(function () {
     }
 
     function $(selector, el) {
+      // $(...) is a web console helper
       if (!el) {
         el = document;
       }
@@ -377,6 +359,7 @@ javascript:(function () {
     }
 
     function $$(selector, el) {
+      // $$(...) is a web console helper
       if (!el) {
         el = document;
       }
@@ -387,4 +370,3 @@ javascript:(function () {
     document.body.appendChild(script);
   }
 })();
-```

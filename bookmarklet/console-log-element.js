@@ -1,4 +1,4 @@
-javascript: (function () {
+;(function () {
   createConsoleLog();
 
   showConsoleLog();
