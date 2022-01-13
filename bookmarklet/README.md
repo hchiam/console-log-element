@@ -6,6 +6,10 @@ https://console-log-element-bookmarklet-backup.surge.sh
 
 https://bookmarklet-generator.surge.sh
 
+```sh
+bash deploy # https://console-log-element-bookmarklet-backup.surge.sh
+```
+
 ```js
 javascript:(function () {
   createConsoleLog();
@@ -367,8 +371,4 @@ javascript:(function () {
     document.body.appendChild(script);
   }
 })();
-```
-
-```sh
-surge surge https://console-log-element-bookmarklet-backup.surge.sh
 ```
