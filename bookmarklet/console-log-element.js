@@ -120,7 +120,6 @@
     }
 
     function outputToWidget(input) {
-      // to avoid recursive selection on body, temporarily take the widget itself out
       // (only one input from input box)
       var output = "";
       try {
