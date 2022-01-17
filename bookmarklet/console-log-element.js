@@ -121,8 +121,6 @@
 
     function outputToWidget(input) {
       // to avoid recursive selection on body, temporarily take the widget itself out
-      var temp = document.getElementById("firefox-extension-console-log-element");
-      document.getElementById("firefox-extension-console-log-element").remove();
       // (only one input from input box)
       var output = "";
       try {
@@ -131,8 +129,8 @@
           output = output.outerHTML.replace(/</g, "&lt;").replace(/\\\//g, "/");
         } else if (typeof output === "object") {
           output = JSON.stringify(output, null, 4);
-        } else if (typeof output === "string") {
-          output = output.replace(/</g, "&lt;").replace(/\\\//g, "/");
+        } else if (typeof output === "string" || typeof output === "number") {
+          output = String(output).replace(/</g, "&lt;").replace(/\\\//g, "/");
         }
         input = String(input).replace(/</g, "&lt;").replace(/\\\//g, "/");
         consoleOutput.innerHTML +=
@@ -156,8 +154,6 @@
           "</span><br/><br/>";
         makeInputGroupWobble();
       }
-      // put the widget back
-      document.body.appendChild(temp);
       inputBox.focus();
     }
 
