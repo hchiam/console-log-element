@@ -21,6 +21,8 @@ Once installed, you can bring up the console log interface by clicking on the ad
 - To submit, hit the "Send command" button, or `Shift+Enter` or `Ctrl+Enter`.
 - Click on the output to expand/collapse it.
 
+This is an old project, with [version 2.1.1](https://github.com/hchiam/console-log-element/releases) released in 2022. If you like this project, you might like [lightweight-inspector](https://github.com/hchiam/lightweight-inspector), which has usability across browsers and mobile devices: https://github.com/hchiam/lightweight-inspector
+
 ## Other links
 
 Live CodePen demo: <https://codepen.io/hchiam/pen/ZEbYgQG>
